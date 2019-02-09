@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -9,6 +11,7 @@ using System.Windows.Input;
 
 namespace FlashFrancais
 {
+    
     class FlashDeckViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -16,7 +19,7 @@ namespace FlashFrancais
         private bool showingFront = true;
         private FlashCard currentCard;
 
-        private FlashDeck myDeck = new FlashDeck(
+        /*private FlashDeck myDeck = new FlashDeck(
             new List<FlashCard>(
                     new FlashCard[]
                     {
@@ -25,7 +28,10 @@ namespace FlashFrancais
                         new FlashCard("francais", "french")
                     }
                 )
-        );
+        );*/
+
+        private const string CURRENT_DECK_PATH = @"F:\Dev\FlashFrancais\Decks\pronominalVerbs.csv";
+        private FlashDeck myDeck = FlashDeck.FromPath(CURRENT_DECK_PATH);
 
         protected void RaisePropertyChangedEvent(string propertyName)
         {

@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -68,6 +69,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FlashDeckViewModel.cs" />
+    <Compile Include="FlashDeckLoader.cs" />
     <Compile Include="FlashDeck.cs" />
     <Compile Include="FlashCard.cs" />
     <Compile Include="MainWindow.xaml.cs">
