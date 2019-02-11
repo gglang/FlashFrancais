@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,8 +32,7 @@ namespace FlashFrancais
                 )
         );*/
 
-        private const string CURRENT_DECK_PATH = @"F:\Dev\FlashFrancais\Decks\pronominalVerbs.csv";
-        private FlashDeck myDeck = FlashDeck.FromPath(CURRENT_DECK_PATH);
+        private FlashDeck myDeck;
 
         protected void RaisePropertyChangedEvent(string propertyName)
         {
@@ -42,7 +43,10 @@ namespace FlashFrancais
 
         public FlashDeckViewModel()
         {
-            Console.WriteLine("I GOT MADE");
+            string relativePath = @"..\..\..\Decks\pronominalVerbs.csv";
+            string absolutePath = Path.GetFullPath(relativePath);
+            myDeck = FlashDeck.FromPath(@absolutePath); // TODO Dependency injection in WPF XAML instantiated viewmodels?
+            // TODO How to use .resx or resource dictionaries to store paths?
         }
 
         public string CurrentCardText
