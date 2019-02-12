@@ -10,20 +10,21 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="308*"/>
+            <RowDefinition Height="38*"/>
+            <RowDefinition Height="69*"/>
         </Grid.RowDefinitions>
-        <Label HorizontalAlignment="Center" Foreground="Green" Grid.Row="0" Content="Current Card"/>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Text="{Binding CurrentCardText, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+        <Label HorizontalAlignment="Center" Foreground="Green" Grid.Row="0" Content="Current Card" Margin="361,0,361,308.036" Grid.RowSpan="2"/>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Text="{Binding CurrentCardText, UpdateSourceTrigger=PropertyChanged}" FontSize="36"/>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1" Margin="0,275.333,0,0" Grid.RowSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Command="{Binding FlipCurrentCardCommand}" Width="100" Height="50" Content="Flip"/>
-            <Button Grid.Column="1" Command="{Binding GetNextCardCommand}" Width="100" Height="50" Content="Next"/>
+            <Button Grid.Column="0" Command="{Binding FlipCurrentCardCommand}" Content="Flip" FontSize="36" RenderTransformOrigin="1.75,-1.787" Margin="10,0,10,10"/>
+            <Button Grid.Column="1" Command="{Binding GetNextCardCommand}" Content="Next" FontSize="36" Margin="10,0,10,10"/>
         </Grid>
     </Grid>
 </UserControl>

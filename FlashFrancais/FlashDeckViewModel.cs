@@ -47,6 +47,7 @@ namespace FlashFrancais
             string absolutePath = Path.GetFullPath(relativePath);
             myDeck = FlashDeck.FromPath(@absolutePath); // TODO Dependency injection in WPF XAML instantiated viewmodels?
             // TODO How to use .resx or resource dictionaries to store paths?
+            GetNextCard();
         }
 
         public string CurrentCardText
