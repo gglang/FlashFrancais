@@ -17,8 +17,8 @@ namespace FlashFrancais
     class FlashDeckViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        private bool showingFront;
         private string currentCardText;
-        private bool showingFront = true;
         private FlashCard currentCard;
 
         /*private FlashDeck myDeck = new FlashDeck(
@@ -47,6 +47,7 @@ namespace FlashFrancais
             string absolutePath = Path.GetFullPath(relativePath);
             myDeck = FlashDeck.FromPath(@absolutePath); // TODO Dependency injection in WPF XAML instantiated viewmodels?
             // TODO How to use .resx or resource dictionaries to store paths?
+            showingFront = true;
             GetNextCard();
         }
 
@@ -64,6 +65,18 @@ namespace FlashFrancais
             }
         }
 
+        public bool ShowingFront
+        {
+            get
+            {
+                return showingFront;
+            }
+            set
+            {
+                showingFront = value;
+                RaisePropertyChangedEvent("ShowingFront");
+            }
+        }
         public ICommand FlipCurrentCardCommand
         {
             get
@@ -85,7 +98,7 @@ namespace FlashFrancais
         private void FlipCurrectCard()
         {
             Console.WriteLine("Flipping card");
-            showingFront = !showingFront;
+            ShowingFront = !ShowingFront;
             RefreshTextDiplay();
         }
 
@@ -93,7 +106,7 @@ namespace FlashFrancais
         {
             Console.WriteLine("Getting next card");
             currentCard = myDeck.GetNextCard();
-            showingFront = true;
+            ShowingFront = true;
             RefreshTextDiplay();
         }
 
@@ -104,7 +117,7 @@ namespace FlashFrancais
                 currentCard = myDeck.GetNextCard();
             }
 
-            CurrentCardText = showingFront ? currentCard.Front : currentCard.Back;
+            CurrentCardText = ShowingFront ? currentCard.Front : currentCard.Back;
         }
     }
 }
