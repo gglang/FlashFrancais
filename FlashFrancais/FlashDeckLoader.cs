@@ -36,7 +36,7 @@ namespace FlashFrancais
                 while (!deckCSVParser.EndOfData)
                 {
                     string[] flashCardSides = deckCSVParser.ReadFields();
-                    FlashCard loadedCard = new FlashCard(flashCardSides[0], flashCardSides[1]);
+                    Card loadedCard = new Card(flashCardSides[0], flashCardSides[1]);
                     deckToLoad.AddCard(loadedCard);
                 }
             }

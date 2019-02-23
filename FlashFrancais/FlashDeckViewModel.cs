@@ -17,20 +17,10 @@ namespace FlashFrancais
     class FlashDeckViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private bool showingFront;
-        private string currentCardText;
-        private FlashCard currentCard;
-
-        /*private FlashDeck myDeck = new FlashDeck(
-            new List<FlashCard>(
-                    new FlashCard[]
-                    {
-                        new FlashCard("bonjour", "hello"),
-                        new FlashCard("monde", "world"),
-                        new FlashCard("francais", "french")
-                    }
-                )
-        );*/
+        private bool _showingFront;
+        private string _currentCardText;
+        private int _cardSuccesses;
+        private Card _currentCard;
 
         private FlashDeck myDeck;
 
@@ -43,24 +33,38 @@ namespace FlashFrancais
 
         public FlashDeckViewModel()
         {
-            string relativePath = @"..\..\..\Decks\pronominalVerbs.csv";
+            //string relativePath = @"..\..\..\Decks\pronominalVerbs.csv";
+            string relativePath = @"..\..\..\Decks\debugDeck.csv";
+
             string absolutePath = Path.GetFullPath(relativePath);
             myDeck = FlashDeck.FromPath(@absolutePath); // TODO Dependency injection in WPF XAML instantiated viewmodels?
             // TODO How to use .resx or resource dictionaries to store paths?
-            showingFront = true;
+            _showingFront = true;
             GetNextCard();
+        }
+
+        public int CardSuccesses
+        {
+            get
+            {
+                return _cardSuccesses;
+            }
+            private set
+            {
+                _cardSuccesses = value;
+                RaisePropertyChangedEvent("CardSuccesses");
+            }
         }
 
         public string CurrentCardText
         {
             get
             {
-                Console.WriteLine("DISPLAYING");
-                return currentCardText;
+                return _currentCardText;
             }
-            set
+            private set
             {
-                currentCardText = value;
+                _currentCardText = value;
                 RaisePropertyChangedEvent("CurrentCardText");
             }
         }
@@ -69,55 +73,73 @@ namespace FlashFrancais
         {
             get
             {
-                return showingFront;
+                return _showingFront;
             }
             set
             {
-                showingFront = value;
+                _showingFront = value;
                 RaisePropertyChangedEvent("ShowingFront");
             }
         }
+
         public ICommand FlipCurrentCardCommand
         {
             get
             {
-                Console.WriteLine("Flip command inc");
                 return new DelegateCommand(FlipCurrectCard);
             }
         }
 
-        public ICommand GetNextCardCommand
+        public ICommand GetNextCardSuccessCommand
         {
             get
             {
-                Console.WriteLine("Get next command inc");
-                return new DelegateCommand(GetNextCard);
+                return new DelegateCommand(GetNextCardSuccess);
+            }
+        }
+
+        public ICommand GetNextCardFailureCommand
+        {
+            get
+            {
+                return new DelegateCommand(GetNextCardFailure);
             }
         }
 
         private void FlipCurrectCard()
         {
-            Console.WriteLine("Flipping card");
             ShowingFront = !ShowingFront;
             RefreshTextDiplay();
         }
 
+        private void GetNextCardSuccess() // TODO Maybe use command parameters to avoid 2 different commands?
+        {
+            _currentCard.AddHistoryEntry(true);
+            GetNextCard();
+        }
+
+        private void GetNextCardFailure()
+        {
+            _currentCard.AddHistoryEntry(false);
+            GetNextCard();
+        }
+
         private void GetNextCard()
         {
-            Console.WriteLine("Getting next card");
-            currentCard = myDeck.GetNextCard();
+            _currentCard = myDeck.GetNextCard();
             ShowingFront = true;
             RefreshTextDiplay();
         }
 
         private void RefreshTextDiplay()
         {
-            if (currentCard == null)
+            if (_currentCard == null)
             {
-                currentCard = myDeck.GetNextCard();
+                _currentCard = myDeck.GetNextCard();
             }
 
-            CurrentCardText = ShowingFront ? currentCard.Front : currentCard.Back;
+            CurrentCardText = ShowingFront ? _currentCard.Front : _currentCard.Back;
+            CardSuccesses = _currentCard.HistoryEntries.Where(entry => entry.Success).Count();
         }
     }
 }

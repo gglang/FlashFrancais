@@ -5,15 +5,15 @@ namespace FlashFrancais
 {
     public class FlashDeck
     {
-        private IList<FlashCard> FlashCards { get; set; }
+        private IList<Card> FlashCards { get; set; }
         private int deckIndex = 0;
 
         private FlashDeck()
         {
-            FlashCards = new List<FlashCard>();
+            FlashCards = new List<Card>();
         }
 
-        private FlashDeck(IList<FlashCard> flashCards)
+        private FlashDeck(IList<Card> flashCards)
         {
             FlashCards = flashCards;
         }
@@ -29,17 +29,17 @@ namespace FlashFrancais
             return deckLoader.GetFlashDeck(deckPath);
         }
 
-        public static FlashDeck FromList(IList<FlashCard> flashCards)
+        public static FlashDeck FromList(IList<Card> flashCards)
         {
             return new FlashDeck(flashCards);
         }
 
-        public FlashCard GetNextCard()
+        public Card GetNextCard()
         {
             return FlashCards[(deckIndex++) % FlashCards.Count];
         }
 
-        public void AddCard(FlashCard card)
+        public void AddCard(Card card)
         {
             FlashCards.Add(card);
         }
