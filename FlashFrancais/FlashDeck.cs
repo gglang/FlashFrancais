@@ -5,43 +5,43 @@ namespace FlashFrancais
 {
     public class FlashDeck
     {
-        private IList<Card> FlashCards { get; set; }
-        private int deckIndex = 0;
+        public string Name { get; }
+        private IList<Card> _flashCards { get; set; }
+        private int _deckIndex = 0;
 
-        private FlashDeck()
+        private FlashDeck(string deckName, IList<Card> flashCards = null)
         {
-            FlashCards = new List<Card>();
+            if (deckName == null)
+                throw new InvalidOperationException("No deck name declared for a deck being constructed. Please provide a deck name!");
+
+            Name = deckName;
+            _flashCards = flashCards ?? new List<Card>();
         }
 
-        private FlashDeck(IList<Card> flashCards)
+        public static FlashDeck FromNothing(string deckName)
         {
-            FlashCards = flashCards;
+            return new FlashDeck(deckName);
         }
 
-        public static FlashDeck FromNothing()
-        {
-            return new FlashDeck();
-        }
-
-        public static FlashDeck FromPath(string deckPath)
+        public static FlashDeck FromPath(string deckPath, string deckName = null)
         {
             var deckLoader = new FlashDeckLoader();
-            return deckLoader.GetFlashDeck(deckPath);
+            return deckLoader.GetFlashDeck(deckPath, deckName: deckName);
         }
 
-        public static FlashDeck FromList(IList<Card> flashCards)
+        public static FlashDeck FromList(IList<Card> flashCards, string deckName)
         {
-            return new FlashDeck(flashCards);
+            return new FlashDeck(deckName, flashCards);
         }
 
         public Card GetNextCard()
         {
-            return FlashCards[(deckIndex++) % FlashCards.Count];
+            return _flashCards[(_deckIndex++) % _flashCards.Count];
         }
 
         public void AddCard(Card card)
         {
-            FlashCards.Add(card);
+            _flashCards.Add(card);
         }
     }
 }
