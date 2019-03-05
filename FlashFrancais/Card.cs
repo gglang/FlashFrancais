@@ -9,6 +9,7 @@ namespace FlashFrancais
 {
     public class Card
     {
+        public int ID { get; } = -1;
         public string Front { get; set; }
         public string Back { get; set; }
 
@@ -17,6 +18,14 @@ namespace FlashFrancais
         public Card(string front, string back)
         {
             HistoryEntries = new List<CardHistoryEntry>();
+            Front = front;
+            Back = back;
+        }
+
+        public Card(int id, string front, string back)
+        {
+            HistoryEntries = new List<CardHistoryEntry>();
+            ID = id;
             Front = front;
             Back = back;
         }

@@ -43,5 +43,10 @@ namespace FlashFrancais
         {
             _flashCards.Add(card);
         }
+
+        public IEnumerable<Card> GetCards()
+        {
+            return _flashCards;
+        }
     }
 }

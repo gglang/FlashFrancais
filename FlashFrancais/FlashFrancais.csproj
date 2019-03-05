@@ -75,7 +75,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CardHistoryEntry.cs" />
-    <Compile Include="DataBase.cs" />
+    <Compile Include="DataBase\DataBase.cs" />
+    <Compile Include="DataBase\InvalidDataBaseOperationException.cs" />
     <Compile Include="ParametrizedBooleanToVisibilityConverter.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="FlashDeckControl.xaml.cs">
