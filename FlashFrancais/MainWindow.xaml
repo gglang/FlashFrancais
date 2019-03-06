@@ -5,10 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FlashFrancais"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Window.DataContext>
-        <local:FlashDeckViewModel/>
-    </Window.DataContext>
+        Title="MainWindow" Height="450" Width="800"
+        DataContext="{Binding Source={StaticResource vmLocator}, Path=FlashDeckViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>

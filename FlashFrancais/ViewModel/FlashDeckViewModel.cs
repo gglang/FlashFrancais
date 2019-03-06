@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Input;
 
-namespace FlashFrancais
+namespace FlashFrancais.ViewModel
 {
-    
-    class FlashDeckViewModel : INotifyPropertyChanged
+    public class FlashDeckViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         private bool _showingFront;
         private string _currentCardText;
         private int _cardSuccesses;
@@ -24,69 +16,29 @@ namespace FlashFrancais
 
         private FlashDeck myDeck;
 
-        protected void RaisePropertyChangedEvent(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public FlashDeckViewModel()
-        {
-            //string relativePath = @"..\..\..\Decks\pronominalVerbs.csv";
-            string relativePath = @"..\..\..\Decks\debugDeck.csv";
-
-            string absolutePath = Path.GetFullPath(relativePath);
-            myDeck = FlashDeck.FromPath(@absolutePath); // TODO Dependency injection in WPF XAML instantiated viewmodels?
-            // TODO How to use .resx or resource dictionaries to store paths?
-            _showingFront = true;
-            GetNextCard();
-        }
-
         public int CardSuccesses
         {
-            get
-            {
-                return _cardSuccesses;
-            }
-            private set
-            {
-                _cardSuccesses = value;
-                RaisePropertyChangedEvent("CardSuccesses");
-            }
+            get { return _cardSuccesses; }
+            private set { Set(ref _cardSuccesses, value); } // TODO abstract dependency on mvvmlight somehow?
         }
 
         public string CurrentCardText
         {
-            get
-            {
-                return _currentCardText;
-            }
-            private set
-            {
-                _currentCardText = value;
-                RaisePropertyChangedEvent("CurrentCardText");
-            }
+            get { return _currentCardText; }
+            private set { Set(ref _currentCardText, value); }
         }
 
         public bool ShowingFront
         {
-            get
-            {
-                return _showingFront;
-            }
-            set
-            {
-                _showingFront = value;
-                RaisePropertyChangedEvent("ShowingFront");
-            }
+            get { return _showingFront; }
+            private set { Set(ref _showingFront, value); }
         }
 
         public ICommand FlipCurrentCardCommand
         {
             get
             {
-                return new DelegateCommand(FlipCurrectCard);
+                return new DelegateCommand(FlipCurrectCard); // TODO mvvmlightify this?
             }
         }
 
@@ -104,6 +56,20 @@ namespace FlashFrancais
             {
                 return new DelegateCommand(GetNextCardFailure);
             }
+        }
+
+        public FlashDeckViewModel(Database database)
+        {
+            // TODO Check out if (IsInDesignMode) example in mvvmlight for blend
+
+            //string relativePath = @"..\..\..\Decks\pronominalVerbs.csv";
+            string relativePath = @"..\..\..\Decks\debugDeck.csv";
+
+            string absolutePath = Path.GetFullPath(relativePath);
+            myDeck = FlashDeck.FromPath(@absolutePath); // TODO Dependency injection in WPF XAML instantiated viewmodels?
+            // TODO How to use .resx or resource dictionaries to store paths?
+            _showingFront = true;
+            GetNextCard();
         }
 
         private void FlipCurrectCard()
