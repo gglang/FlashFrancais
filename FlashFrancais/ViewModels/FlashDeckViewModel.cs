@@ -1,11 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
-using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
-namespace FlashFrancais.ViewModel
+namespace FlashFrancais.ViewModels
 {
     public class FlashDeckViewModel : ViewModelBase
     {
@@ -62,14 +60,11 @@ namespace FlashFrancais.ViewModel
         {
             // TODO Check out if (IsInDesignMode) example in mvvmlight for blend
 
-            //string relativePath = @"..\..\..\Decks\pronominalVerbs.csv";
-            string relativePath = @"..\..\..\Decks\debugDeck.csv";
-
-            string absolutePath = Path.GetFullPath(relativePath);
-            myDeck = FlashDeck.FromPath(@absolutePath); // TODO Dependency injection in WPF XAML instantiated viewmodels?
+            //myDeck = FlashDeck.FromCSV(Path.GetFullPath(@"..\..\..\Decks\debugDeck.csv")); // TODO Dependency injection in WPF XAML instantiated viewmodels?
+            myDeck = FlashDeck.FromAnki(Path.GetFullPath(@"..\..\..\Decks\Test\collection.anki2"), "5000MotsCourants");
             // TODO How to use .resx or resource dictionaries to store paths?
             _showingFront = true;
-            GetNextCard();
+            GetNextCard(); // TODO move this to a start event in WPF or something else...
         }
 
         private void FlipCurrectCard()

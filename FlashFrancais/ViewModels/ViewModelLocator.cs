@@ -2,7 +2,7 @@ using System.Reflection;
 using FlashFrancais.Services;
 using Autofac;
 
-namespace FlashFrancais.ViewModel
+namespace FlashFrancais.ViewModels
 {
     public class ViewModelLocator
     {

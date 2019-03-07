@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using FlashFrancais.ViewModel;
+using FlashFrancais.ViewModels;
 using System.Data.SQLite;
 
 namespace FlashFrancais.Services
@@ -18,7 +18,7 @@ namespace FlashFrancais.Services
             {
                 var sqliteConnectionString = "Data Source=C:/Dev/FlashFrancais/Decks/FlashDB.sqlite;Version=3;";
                 var sqliteConnection = new SQLiteConnection(sqliteConnectionString);
-                sqliteConnection.Open(); // TODO Is this sort of stuff kosher in autofac?
+                sqliteConnection.Open(); // TODO Is this sort of stuff kosher in autofac? Do elsewhere... and close conn in finally block?
                 return new SQLiteDatabase(sqliteConnection);
             }).As<Database>();
 

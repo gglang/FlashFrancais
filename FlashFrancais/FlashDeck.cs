@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlashFrancais.DeckLoaders;
+using System;
 using System.Collections.Generic;
 
 namespace FlashFrancais
@@ -23,10 +24,16 @@ namespace FlashFrancais
             return new FlashDeck(deckName);
         }
 
-        public static FlashDeck FromPath(string deckPath, string deckName = null)
+        public static FlashDeck FromCSV(string deckPath, string deckName = null)
         {
-            var deckLoader = new FlashDeckLoader();
+            var deckLoader = new CSVDeckLoader();
             return deckLoader.GetFlashDeck(deckPath, deckName: deckName);
+        }
+
+        public static FlashDeck FromAnki(string deckPath, string deckName = null)
+        {
+            var deckLoader = new AnkiDeckLoader();
+            return deckLoader.GetFlashDeck(deckPath, deckName); // TODO is there better pattern here for loading different file types? Injecting the loader perhaps?
         }
 
         public static FlashDeck FromList(IList<Card> flashCards, string deckName)

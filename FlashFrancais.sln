@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashFrancais", "FlashFrancais\FlashFrancais.csproj", "{41B16A74-1929-4EBF-B374-B3071F7D3124}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLiteTesting", "SQLiteTesting\SQLiteTesting.csproj", "{F325FFA6-5ED4-4C24-87AC-A29F009436CB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{41B16A74-1929-4EBF-B374-B3071F7D3124}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41B16A74-1929-4EBF-B374-B3071F7D3124}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41B16A74-1929-4EBF-B374-B3071F7D3124}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F325FFA6-5ED4-4C24-87AC-A29F009436CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F325FFA6-5ED4-4C24-87AC-A29F009436CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F325FFA6-5ED4-4C24-87AC-A29F009436CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F325FFA6-5ED4-4C24-87AC-A29F009436CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
