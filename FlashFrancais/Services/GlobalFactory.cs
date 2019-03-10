@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using FlashFrancais.ViewModels;
 using System.Data.SQLite;
+using System.IO;
 
 namespace FlashFrancais.Services
 {
@@ -14,15 +15,9 @@ namespace FlashFrancais.Services
 
             // TODO perhaps refactor this to be more abstracted
             // Ala: https://autofaccn.readthedocs.io/en/latest/faq/injecting-configured-parameters.html
-            builder.Register(ctx =>
-            {
-                var sqliteConnectionString = "Data Source=C:/Dev/FlashFrancais/Decks/FlashDB.sqlite;Version=3;";
-                var sqliteConnection = new SQLiteConnection(sqliteConnectionString);
-                sqliteConnection.Open(); // TODO Is this sort of stuff kosher in autofac? Do elsewhere... and close conn in finally block?
-                return new SQLiteDatabase(sqliteConnection);
-            }).As<Database>();
-
-            builder.RegisterType<FlashDeckViewModel>();
+            builder.RegisterType<ConnectionStringProvider>(); // TODO Resolve this into an interface?
+            builder.RegisterType<SQLiteDatabase>().SingleInstance().As<Database>();
+            builder.RegisterType<FlashDeckViewModel>(); // TODO Resolve this into an interface?
 
             Container = builder.Build();
         }

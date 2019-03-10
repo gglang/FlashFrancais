@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlashFrancais.Services;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -11,11 +12,14 @@ namespace FlashFrancais
     {
         private SQLiteConnection _connection;
 
-        public SQLiteDatabase(SQLiteConnection connection)
+        public SQLiteDatabase(ConnectionStringProvider connectionStringProvider)
         {
-            _connection = connection ?? throw new InvalidDataBaseOperationException("Cannot construct a database with a null connection.");
+            SQLiteConnection connection = new SQLiteConnection(connectionStringProvider.GetConnectionString());
+            _connection = connection ?? throw new InvalidDataBaseOperationException("Cannot construct a database with a null connection. " +
+                "Check ConnectionStringProvider for problems loading a valid connection string to initialize database.");
+            _connection.Open(); // TODO Where is the best place to open and close connections?
         }
-        
+
         private void ExecuteSimpleQuery(string sql)
         {
             var sqlCommand = new SQLiteCommand(sql, _connection);

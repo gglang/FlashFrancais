@@ -14,7 +14,8 @@ namespace FlashFrancais.DeckLoaders
             deckName = deckName ?? GetDeckNameFromFileName(deckPath);
 
             // SQLite connection
-            SQLiteConnection connection = new SQLiteConnection("Data Source=C:/Dev/FlashFrancais/Decks/Test/collection.anki2;Version=3;");
+            string connectionString = String.Format("Data Source={0};Version=3;",deckPath);
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
             connection.Open();
 
             // Get Reader
