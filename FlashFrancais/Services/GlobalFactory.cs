@@ -15,7 +15,7 @@ namespace FlashFrancais.Services
 
             // TODO perhaps refactor this to be more abstracted
             // Ala: https://autofaccn.readthedocs.io/en/latest/faq/injecting-configured-parameters.html
-            builder.RegisterType<ConnectionStringProvider>(); // TODO Resolve this into an interface?
+            builder.RegisterType<ConnectionStringProvider>(); // TODO Resolve this into an interface? Perhaps it should provide Connections, rather than strings, more secure?
             builder.RegisterType<SQLiteDatabase>().SingleInstance().As<Database>();
             builder.RegisterType<FlashDeckViewModel>(); // TODO Resolve this into an interface?
 
