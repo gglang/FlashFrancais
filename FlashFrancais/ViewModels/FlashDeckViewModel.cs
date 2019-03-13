@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using FlashFrancais.Services;
 
 namespace FlashFrancais.ViewModels
 {
@@ -12,7 +13,7 @@ namespace FlashFrancais.ViewModels
         private int _cardSuccesses;
         private Card _currentCard;
 
-        private FlashDeck myDeck;
+        private FlashDeck _myDeck;
 
         public int CardSuccesses
         {
@@ -56,13 +57,11 @@ namespace FlashFrancais.ViewModels
             }
         }
 
-        public FlashDeckViewModel(Database database)
+        public FlashDeckViewModel(Database database, FlashDeckProvider deckProvider)
         {
             // TODO Check out if (IsInDesignMode) example in mvvmlight for blend
 
-            //myDeck = FlashDeck.FromCSV(Path.GetFullPath(@"..\..\..\Decks\debugDeck.csv")); // TODO Dependency injection in WPF XAML instantiated viewmodels?
-            myDeck = FlashDeck.FromAnki(Path.GetFullPath(@"..\..\..\Decks\Test\collection.anki2"), "5000MotsCourants");
-            // TODO How to use .resx or resource dictionaries to store paths?
+            _myDeck = deckProvider.GetFlashDeck(); // TODO is this the right place for this kind of logic?
             _showingFront = true;
             GetNextCard(); // TODO move this to a start event in WPF or something else...
         }
@@ -70,10 +69,10 @@ namespace FlashFrancais.ViewModels
         private void FlipCurrectCard()
         {
             ShowingFront = !ShowingFront;
-            RefreshTextDiplay();
+            RefreshTextDisplay();
         }
 
-        private void GetNextCardSuccess() // TODO Maybe use command parameters to avoid 2 different commands?
+        private void GetNextCardSuccess() // TODO Maybe use command parameters to avoid 2 different commands? Also rename to something better...
         {
             _currentCard.AddHistoryEntry(true);
             GetNextCard();
@@ -87,16 +86,16 @@ namespace FlashFrancais.ViewModels
 
         private void GetNextCard()
         {
-            _currentCard = myDeck.GetNextCard();
+            _currentCard = _myDeck.GetNextCardNew();
             ShowingFront = true;
-            RefreshTextDiplay();
+            RefreshTextDisplay();
         }
 
-        private void RefreshTextDiplay()
+        private void RefreshTextDisplay()
         {
             if (_currentCard == null)
             {
-                _currentCard = myDeck.GetNextCard();
+                _currentCard = _myDeck.GetNextCardNew();
             }
 
             CurrentCardText = ShowingFront ? _currentCard.Front : _currentCard.Back;

@@ -1,4 +1,5 @@
-﻿using FlashFrancais.DeckLoaders;
+﻿using FlashFrancais.CardServers;
+using FlashFrancais.DeckLoaders;
 using System;
 using System.Collections.Generic;
 
@@ -7,43 +8,51 @@ namespace FlashFrancais
     public class FlashDeck
     {
         public string Name { get; }
+        private CardServer _cardServer; // TODO Why private property like this?
         private IList<Card> _flashCards { get; set; }
         private int _deckIndex = 0;
 
-        private FlashDeck(string deckName, IList<Card> flashCards = null)
+        private FlashDeck(CardServer cardServer, string deckName, IList<Card> flashCards = null)
         {
-            if (deckName == null)
+            if (deckName == null) // TODO What about the rule of never passing null? Can we then avoid null checks?
                 throw new InvalidOperationException("No deck name declared for a deck being constructed. Please provide a deck name!");
 
             Name = deckName;
             _flashCards = flashCards ?? new List<Card>();
+            _cardServer = cardServer;
+            _cardServer.Init(_flashCards); // TODO I am not convinced of this pattern :( Also it seems to take way too long to set new things up when doing DI like this
         }
 
-        public static FlashDeck FromNothing(string deckName)
+        public static FlashDeck FromNothing(CardServer cardServer, string deckName)
         {
-            return new FlashDeck(deckName);
+            return new FlashDeck(cardServer, deckName);
         }
 
-        public static FlashDeck FromCSV(string deckPath, string deckName = null)
+        public static FlashDeck FromCSV(CardServer cardServer, string deckPath, string deckName = null)
         {
             var deckLoader = new CSVDeckLoader();
             return deckLoader.GetFlashDeck(deckPath, deckName: deckName);
         }
 
-        public static FlashDeck FromAnki(string deckPath, string deckName = null)
+        public static FlashDeck FromAnki(CardServer cardServer, string deckPath, string deckName = null) // TODO does the server really belong here?
         {
-            var deckLoader = new AnkiDeckLoader();
+            var deckLoader = new AnkiDeckLoader(); // TODO lol between providers, factory constructors, loader classes, the creation of a flashdeck has become a monster
             return deckLoader.GetFlashDeck(deckPath, deckName); // TODO is there better pattern here for loading different file types? Injecting the loader perhaps?
         }
 
-        public static FlashDeck FromList(IList<Card> flashCards, string deckName)
+        public static FlashDeck FromList(CardServer cardServer, IList<Card> flashCards, string deckName)
         {
-            return new FlashDeck(deckName, flashCards);
+            return new FlashDeck(cardServer, deckName, flashCards);
         }
 
         public Card GetNextCard()
         {
             return _flashCards[(_deckIndex++) % _flashCards.Count];
+        }
+
+        public Card GetNextCardNew()
+        {
+            return _cardServer.GetNextCard();
         }
 
         public void AddCard(Card card)

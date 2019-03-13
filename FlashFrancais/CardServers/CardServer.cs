@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace FlashFrancais.CardServers
 {
     public abstract class CardServer
     {
-        public CardServer(FlashDeck deck)
-        {
+        protected IList<Card> _cards;
 
+        public void Init(IList<Card> cards)
+        {
+            _cards = cards;
         }
 
         public abstract Card GetNextCard();
