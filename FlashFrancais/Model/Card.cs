@@ -35,9 +35,9 @@ namespace FlashFrancais
             HistoryEntries.Add(entry);
         }
 
-        public void AddHistoryEntry(bool success)
+        public void AddHistoryEntry(TrialPerformance trialPerformance)
         {
-            AddHistoryEntry(new CardHistoryEntry(DateTime.Now, success));
+            AddHistoryEntry(new CardHistoryEntry(DateTime.Now, trialPerformance));
         }
     }
 }

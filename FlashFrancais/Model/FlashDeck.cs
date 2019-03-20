@@ -31,13 +31,13 @@ namespace FlashFrancais
         public static FlashDeck FromCSV(CardServer cardServer, string deckPath, string deckName = null)
         {
             var deckLoader = new CSVDeckLoader();
-            return deckLoader.GetFlashDeck(deckPath, deckName: deckName);
+            return deckLoader.GetFlashDeck(cardServer, deckPath, deckName: deckName);
         }
 
         public static FlashDeck FromAnki(CardServer cardServer, string deckPath, string deckName = null) // TODO does the server really belong here?
         {
             var deckLoader = new AnkiDeckLoader(); // TODO lol between providers, factory constructors, loader classes, the creation of a flashdeck has become a monster
-            return deckLoader.GetFlashDeck(deckPath, deckName); // TODO is there better pattern here for loading different file types? Injecting the loader perhaps?
+            return deckLoader.GetFlashDeck(cardServer, deckPath, deckName); // TODO is there better pattern here for loading different file types? Injecting the loader perhaps?
         }
 
         public static FlashDeck FromList(CardServer cardServer, IList<Card> flashCards, string deckName)

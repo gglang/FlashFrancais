@@ -1,4 +1,5 @@
 ﻿using AnkiSharp;
+using FlashFrancais.CardServers;
 using System;
 using System.Data;
 using System.Data.SQLite;
@@ -9,7 +10,7 @@ namespace FlashFrancais.DeckLoaders
     {
         // Lolz; process for loading anki .apkg: rename to .zip, unzip, load .anki2 into sqlite, read cards based on format
         // defined in this particular anki deck
-        public override FlashDeck GetFlashDeck(string deckPath, string deckName = null)
+        public override FlashDeck GetFlashDeck(CardServer cardServer, string deckPath, string deckName = null)
         {
             deckName = deckName ?? GetDeckNameFromFileName(deckPath);
 
@@ -25,7 +26,7 @@ namespace FlashFrancais.DeckLoaders
             SQLiteDataReader dataReader = command.ExecuteReader();
 
             // Read
-            FlashDeck deck = FlashDeck.FromNothing(deckName);
+            FlashDeck deck = FlashDeck.FromNothing(cardServer, deckName);
             string[] unicodeSpaceSeperator = { "\u001f" };
             while(dataReader.Read())
             {

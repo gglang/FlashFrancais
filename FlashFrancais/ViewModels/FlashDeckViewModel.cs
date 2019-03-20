@@ -74,13 +74,13 @@ namespace FlashFrancais.ViewModels
 
         private void GetNextCardSuccess() // TODO Maybe use command parameters to avoid 2 different commands? Also rename to something better...
         {
-            _currentCard.AddHistoryEntry(true);
+            _currentCard.AddHistoryEntry(TrialPerformance.Normal);
             GetNextCard();
         }
 
         private void GetNextCardFailure()
         {
-            _currentCard.AddHistoryEntry(false);
+            _currentCard.AddHistoryEntry(TrialPerformance.Fail);
             GetNextCard();
         }
 
@@ -99,7 +99,7 @@ namespace FlashFrancais.ViewModels
             }
 
             CurrentCardText = ShowingFront ? _currentCard.Front : _currentCard.Back;
-            CardSuccesses = _currentCard.HistoryEntries.Where(entry => entry.Success).Count();
+            CardSuccesses = _currentCard.HistoryEntries.Where(entry => entry.TrialPerformance > 0).Count();
         }
     }
 }

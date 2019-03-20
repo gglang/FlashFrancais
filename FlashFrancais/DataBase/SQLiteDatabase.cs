@@ -1,4 +1,5 @@
-﻿using FlashFrancais.Services;
+﻿using FlashFrancais.CardServers;
+using FlashFrancais.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -92,9 +93,9 @@ namespace FlashFrancais
             return deckNames.ToArray();
         }
 
-        public FlashDeck GetDeck(string deckName)
+        public FlashDeck GetDeck(CardServer cardServer, string deckName)
         {
-            FlashDeck deck = FlashDeck.FromNothing(deckName);
+            FlashDeck deck = FlashDeck.FromNothing(cardServer, deckName);
             string getDeckQuery = String.Format("select * from Decks where DeckName='{0}'", deckName);
             SQLiteDataReader dataReader = ExecuteReaderQuery(getDeckQuery);
             while(dataReader.Read())
@@ -125,9 +126,8 @@ namespace FlashFrancais
             while(dataReader.Read())
             {
                 DateTime dateTime = new DateTime(Convert.ToInt64(dataReader["DateTime"]));
-                int successInt = Convert.ToInt32(dataReader["Success"]);
-                bool success = successInt == 1 ? true : false;
-                var historyEntry = new CardHistoryEntry(dateTime, success);
+                TrialPerformance trialPerformance = (TrialPerformance)Convert.ToInt32(dataReader["Success"]);
+                var historyEntry = new CardHistoryEntry(dateTime, trialPerformance);
                 historyEntries.Add(historyEntry);
             }
 

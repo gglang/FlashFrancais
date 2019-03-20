@@ -11,6 +11,7 @@ namespace FlashFrancais.CardServers
             _cards = cards;
         }
 
+        public abstract void RecordPreviousTrial(TrialPerformance trialPerformance);
         public abstract Card GetNextCard();
     }
 }

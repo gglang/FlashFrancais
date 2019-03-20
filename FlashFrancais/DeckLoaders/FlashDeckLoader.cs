@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using FlashFrancais.CardServers;
+using System.IO;
 
 namespace FlashFrancais.DeckLoaders
 {
     public abstract class FlashDeckLoader
     {
-        public abstract FlashDeck GetFlashDeck(string deckPath, string deckName);
+        public abstract FlashDeck GetFlashDeck(CardServer cardServer, string deckPath, string deckName);
 
         protected string GetDeckNameFromFileName(string deckPath)
         {

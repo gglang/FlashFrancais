@@ -1,18 +1,19 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using FlashFrancais.CardServers;
+using Microsoft.VisualBasic.FileIO;
 
 namespace FlashFrancais.DeckLoaders
 {
     public class CSVDeckLoader : FlashDeckLoader
     {
-        public override FlashDeck GetFlashDeck(string deckPath, string deckName = null)
+        public override FlashDeck GetFlashDeck(CardServer cardServer, string deckPath, string deckName = null)
         {
             deckName = deckName ?? GetDeckNameFromFileName(deckPath);
-            return LoadSingleColumnCSV(deckPath, deckName);
+            return LoadSingleColumnCSV(cardServer, deckPath, deckName);
         }
 
-        private FlashDeck LoadSingleColumnCSV(string deckPath, string deckName)
+        private FlashDeck LoadSingleColumnCSV(CardServer cardServer, string deckPath, string deckName)
         {
-            FlashDeck deckToLoad = FlashDeck.FromNothing(deckName);
+            FlashDeck deckToLoad = FlashDeck.FromNothing(cardServer, deckName);
             using (TextFieldParser deckCSVParser = new TextFieldParser(@deckPath))
             {
                 deckCSVParser.TextFieldType = FieldType.Delimited;
