@@ -12,7 +12,7 @@ namespace FlashFrancais.Services
 
         public FlashDeckProvider(CardServer cardServer) // TODO Add config provider to here and read what you need from some kind of config database/csv
         {
-            cardServer = _cardServer;
+            _cardServer = cardServer;
         }
 
         public FlashDeck GetFlashDeck()

@@ -13,12 +13,16 @@ namespace FlashFrancais.CardServers
         private const float newInterval = 0f; // m0
         private const float easyIntervalModifier = 1.3f; // m4
 
+        private const int _maxFreshCards = 30;
+        private const float _amountOfDaysForStale = 3;
+
         private AnkiCardIntervalData _previousCardIntervalData = null;
-        private IList<AnkiCardIntervalData> _cardToIntervalMapping = null;
+        private IList<AnkiCardIntervalData> _activeCards = null;
+        private IList<AnkiCardIntervalData> _inactiveCards = null;
 
         public override void RecordPreviousTrial(TrialPerformance trialPerformance)
         {
-            if(_previousCardIntervalData == null)
+            if (_previousCardIntervalData == null)
             {
                 throw new InvalidOperationException("Tried to record trial data without first getting a card. GetNextCard first!");
             }
@@ -26,40 +30,86 @@ namespace FlashFrancais.CardServers
             _previousCardIntervalData = CalculateCardIntervalData(_previousCardIntervalData.card); // HACK HACK FIXME TODO does this even work?
 
             int insertAt = 0;
-            for(int i = 0; i < _cardToIntervalMapping.Count; i++)
+            for (int i = 0; i < _activeCards.Count; i++)
             {
-                insertAt = i+1;
-                if(_previousCardIntervalData.interval >= _cardToIntervalMapping[i].interval)
+                insertAt = i + 1; // TODO FIXME This is a bug that nicely allows us to not see failed cards twice in a row but schedules things off by one
+                if (_previousCardIntervalData.interval >= _activeCards[i].interval)
                 {
-                    continue;
+                    continue; 
                 } else
                 {
                     break;
                 }
             }
 
-            _cardToIntervalMapping.Insert(insertAt, _previousCardIntervalData);
+            _activeCards.Insert(insertAt, _previousCardIntervalData);
         }
 
-        public override Card GetNextCard()
+        public override Card GetNextCard(TrialPerformance trialPerformance)
         {
-            if(_cardToIntervalMapping == null)
+            if (_inactiveCards == null || _activeCards == null)
             {
-                _cardToIntervalMapping = GetAscendingOrderCardToIntervalMapping();
+                InitCardData();
             }
-            
-            if(_cardToIntervalMapping == null || _cardToIntervalMapping.Count <= 0)
+
+            if (_activeCards.Count <= 0 && _inactiveCards.Count <= 0)
             {
                 return null;
             }
 
-            Card nextCard = _cardToIntervalMapping[0].card;
-            _previousCardIntervalData = _cardToIntervalMapping[0];
-            _cardToIntervalMapping.Remove(_previousCardIntervalData); // TODO slow?
+            if (_previousCardIntervalData != null)
+            {
+                RecordPreviousTrial(trialPerformance);
+            }
+
+            if (ShouldActivateNewCard())
+            {
+                ActivateNewCard();
+            }
+
+            Card nextCard = _activeCards[0].card;
+            _previousCardIntervalData = _activeCards[0];
+            _activeCards.Remove(_previousCardIntervalData); // TODO slow?
             return nextCard;
         }
 
-        private IList<AnkiCardIntervalData> GetAscendingOrderCardToIntervalMapping()
+        private bool ShouldActivateNewCard()
+        {
+            if(_activeCards.Count < _maxFreshCards)
+            {
+                return true;
+            }
+
+            int freshCardCount = 0;
+            foreach (AnkiCardIntervalData cardData in _activeCards)
+            {
+                if (cardData.interval < _amountOfDaysForStale)
+                {
+                    freshCardCount++;
+                }
+            }
+
+            if (freshCardCount < _maxFreshCards)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        private void ActivateNewCard()
+        {
+            if (_inactiveCards == null || _inactiveCards.Count == 0)
+            {
+                return;
+            }
+
+            _activeCards.Insert(0, _inactiveCards[0]);
+            _inactiveCards.RemoveAt(0);
+        }
+
+        private void InitCardData()
         {
             List<AnkiCardIntervalData> cardsWithIntervals = new List<AnkiCardIntervalData>();
             foreach (Card c in _cards)
@@ -68,7 +118,17 @@ namespace FlashFrancais.CardServers
                 cardsWithIntervals.Add(cardIntervalData);
             }
             cardsWithIntervals.OrderBy(x => x.interval);
-            return cardsWithIntervals;
+            _inactiveCards = cardsWithIntervals;
+            _activeCards = new List<AnkiCardIntervalData>();
+
+            for(int i = _inactiveCards.Count - 1; i >= 0; i--)
+            {
+                if(_inactiveCards[i].interval > 0)
+                {
+                    _activeCards.Add(_inactiveCards[i]);
+                    _inactiveCards.RemoveAt(i);
+                }
+            }
         }
 
         private AnkiCardIntervalData CalculateCardIntervalData(Card c)
@@ -84,7 +144,6 @@ namespace FlashFrancais.CardServers
                 {
                     interval = newInterval;
                     lastHistoryEntry = historyEntry;
-                    continue;
                 }
 
                 switch(historyEntry.TrialPerformance)
@@ -114,7 +173,7 @@ namespace FlashFrancais.CardServers
 
             var cardIntervalData = new AnkiCardIntervalData()
             {
-                lastReview = lastHistoryEntry.EntryTime,
+                lastReview = lastHistoryEntry?.EntryTime,
                 card = c,
                 interval = interval,
                 understandingFactor = uf
@@ -180,7 +239,7 @@ namespace FlashFrancais.CardServers
 
         private class AnkiCardIntervalData
         {
-            public DateTime lastReview { get; set; }
+            public DateTime? lastReview { get; set; }
             public Card card { get; set; }
             public double interval { get; set; }
             public double understandingFactor { get; set; }

@@ -50,9 +50,9 @@ namespace FlashFrancais
             return _flashCards[(_deckIndex++) % _flashCards.Count];
         }
 
-        public Card GetNextCardNew()
+        public Card GetNextCardNew(TrialPerformance trialPerformance)
         {
-            return _cardServer.GetNextCard();
+            return _cardServer.GetNextCard(trialPerformance);
         }
 
         public void AddCard(Card card)

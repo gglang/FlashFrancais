@@ -63,7 +63,7 @@ namespace FlashFrancais.ViewModels
 
             _myDeck = deckProvider.GetFlashDeck(); // TODO is this the right place for this kind of logic?
             _showingFront = true;
-            GetNextCard(); // TODO move this to a start event in WPF or something else...
+            GetNextCard(TrialPerformance.Fail); // TODO move this to a start event in WPF or something else...
         }
 
         private void FlipCurrectCard()
@@ -75,18 +75,18 @@ namespace FlashFrancais.ViewModels
         private void GetNextCardSuccess() // TODO Maybe use command parameters to avoid 2 different commands? Also rename to something better...
         {
             _currentCard.AddHistoryEntry(TrialPerformance.Normal);
-            GetNextCard();
+            GetNextCard(TrialPerformance.Normal);
         }
 
         private void GetNextCardFailure()
         {
             _currentCard.AddHistoryEntry(TrialPerformance.Fail);
-            GetNextCard();
+            GetNextCard(TrialPerformance.Fail);
         }
 
-        private void GetNextCard()
+        private void GetNextCard(TrialPerformance trialPerformance)
         {
-            _currentCard = _myDeck.GetNextCardNew();
+            _currentCard = _myDeck.GetNextCardNew(trialPerformance);
             ShowingFront = true;
             RefreshTextDisplay();
         }
@@ -95,7 +95,7 @@ namespace FlashFrancais.ViewModels
         {
             if (_currentCard == null)
             {
-                _currentCard = _myDeck.GetNextCardNew();
+                _currentCard = _myDeck.GetNextCardNew(TrialPerformance.Fail);
             }
 
             CurrentCardText = ShowingFront ? _currentCard.Front : _currentCard.Back;
