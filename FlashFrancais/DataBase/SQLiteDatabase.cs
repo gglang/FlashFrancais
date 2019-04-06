@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Linq;
 
 namespace FlashFrancais
 {
@@ -81,6 +82,7 @@ namespace FlashFrancais
 
             string getNewCardIDQuery = "select CardID from Cards where rowid=last_insert_rowid()";
             int newCardID = ExecuteScalarQuery(getNewCardIDQuery);
+            card.ID = newCardID;
             return newCardID;
         }
 
@@ -121,7 +123,8 @@ namespace FlashFrancais
                 string cardFront = Convert.ToString(dataReader["Front"]);
                 string cardBack = Convert.ToString(dataReader["Back"]);
                 int id = Convert.ToInt32(dataReader["CardID"]);
-                Card card = new Card(id, cardFront, cardBack);
+                List<CardHistoryEntry> historyEntries = GetHistory(id).ToList(); // TODO Batch this somehow... but apparently its not too slow?
+                Card card = new Card(cardFront, cardBack, historyEntries, id);
                 deck.AddCard(card);
             }
 
@@ -137,10 +140,10 @@ namespace FlashFrancais
             AddHistoryEntryToDatabase(card, trialPerformance);
         }
 
-        public CardHistoryEntry[] GetHistory(Card card)
+        public CardHistoryEntry[] GetHistory(int cardID)
         {
             List<CardHistoryEntry> historyEntries = new List<CardHistoryEntry>();
-            string getHistoryQuery = String.Format("select * from CardHistories where Card='{0}'", card.ID);
+            string getHistoryQuery = string.Format("select * from CardHistories where Card='{0}'", cardID);
             SQLiteDataReader dataReader = ExecuteReaderQuery(getHistoryQuery);
             while(dataReader.Read())
             {

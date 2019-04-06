@@ -11,6 +11,6 @@ namespace FlashFrancais
         FlashDeck GetDeck(CardServer cardServer, string deckName);
 
         void AddHistoryEntry(Card card, TrialPerformance trialPerformance);
-        CardHistoryEntry[] GetHistory(Card card);
+        CardHistoryEntry[] GetHistory(int cardID);
     }
 }
