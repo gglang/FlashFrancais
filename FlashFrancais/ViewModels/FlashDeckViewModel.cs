@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using FlashFrancais.Services;
@@ -12,6 +11,7 @@ namespace FlashFrancais.ViewModels
         private string _currentCardText;
         private int _cardSuccesses;
         private Card _currentCard;
+        private Database _database;
 
         private FlashDeck _myDeck;
 
@@ -60,7 +60,7 @@ namespace FlashFrancais.ViewModels
         public FlashDeckViewModel(Database database, FlashDeckProvider deckProvider)
         {
             // TODO Check out if (IsInDesignMode) example in mvvmlight for blend
-
+            _database = database;
             _myDeck = deckProvider.GetFlashDeck(); // TODO is this the right place for this kind of logic?
             _showingFront = true;
             GetNextCard(TrialPerformance.Fail); // TODO move this to a start event in WPF or something else...
@@ -86,7 +86,7 @@ namespace FlashFrancais.ViewModels
 
         private void GetNextCard(TrialPerformance trialPerformance)
         {
-            _currentCard = _myDeck.GetNextCardNew(trialPerformance);
+            _currentCard = _myDeck.GetNextCard(_database, trialPerformance);
             ShowingFront = true;
             RefreshTextDisplay();
         }
@@ -95,7 +95,7 @@ namespace FlashFrancais.ViewModels
         {
             if (_currentCard == null)
             {
-                _currentCard = _myDeck.GetNextCardNew(TrialPerformance.Fail);
+                _currentCard = _myDeck.GetNextCard(_database, TrialPerformance.Fail);
             }
 
             CurrentCardText = ShowingFront ? _currentCard.Front : _currentCard.Back;

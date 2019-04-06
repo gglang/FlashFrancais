@@ -1,10 +1,10 @@
 ﻿using FlashFrancais.CardServers;
 using FlashFrancais.Services;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 
 namespace FlashFrancais
 {
@@ -44,40 +44,52 @@ namespace FlashFrancais
 
         #region Deck DB
 
-        public void AddCardToDeck(Card card, FlashDeck deck)
+        public void AddCardToDeck(Card card, string deckName)
         {
-            AddCardToDatabase(card, deck);
+            AddCardToDatabase(card, deckName);
         }
 
-        public void AddCardsToDeck(IEnumerable<Card> cards, FlashDeck deck)
+        public void AddCardsToDeck(IEnumerable<Card> cards, string deckName)
         {
-            foreach(Card card in cards)
+            int index = 0;
+            using (var transaction = _connection.BeginTransaction())
             {
-                AddCardToDeck(card, deck);
+                foreach (Card card in cards)
+                {
+                    index++;
+                    Debug.WriteLine(string.Format("Card #{0} being added.", index));
+                    AddCardToDeck(card, deckName);
+                }
+
+                transaction.Commit();
             }
         }
 
-        private void AddCardToDatabase(Card card, FlashDeck deck) // TODO Maybe make exception throw if card already exists? Make unique(front, back) constraint on cards table
+        private void AddCardToDatabase(Card card, string deckName) // TODO Maybe make exception throw if card already exists? Make unique(front, back) constraint on cards table
         {
             int newCardID = AddCardToCardTable(card);
-            AddCardToDeckTable(deck, newCardID);
+            AddCardToDeckTable(deckName, newCardID);
         }
 
         /// <returns>ID of new card added to database.</returns>
         private int AddCardToCardTable(Card card)
         {
-            string addCardQuery = String.Format("insert into Cards (Front, Back) values ('{0}', '{1}')", card.Front, card.Back);
-            string getNewCardIDQuery = "select CardID from Cards where rowid=last_insert_rowid()";
+            var command = new SQLiteCommand("insert into Cards (Front, Back) values (@front, @back)", _connection);
+            command.Parameters.AddWithValue("@front", card.Front);
+            command.Parameters.AddWithValue("@back", card.Back); // TODO Use this binding technique everywhere
+            command.ExecuteNonQuery();
 
-            ExecuteSimpleQuery(addCardQuery);
+            string getNewCardIDQuery = "select CardID from Cards where rowid=last_insert_rowid()";
             int newCardID = ExecuteScalarQuery(getNewCardIDQuery);
             return newCardID;
         }
 
-        private void AddCardToDeckTable(FlashDeck deck, int cardID)
+        private void AddCardToDeckTable(string deckName, int cardID)
         {
-            string addCardToDeckQuery = String.Format("insert into Decks (DeckName, Card) values ('{0}', {1})", deck.Name, cardID);
-            ExecuteSimpleQuery(addCardToDeckQuery);
+            var command = new SQLiteCommand("insert into Decks (DeckName, Card) values (@deckName, @cardID)", _connection);
+            command.Parameters.AddWithValue("@deckName", deckName);
+            command.Parameters.AddWithValue("@cardID", cardID); // TODO How do SQL attacks work and why does this prevent them?
+            command.ExecuteNonQuery();
         }
 
         public string[] GetDeckNames()
@@ -96,13 +108,20 @@ namespace FlashFrancais
         public FlashDeck GetDeck(CardServer cardServer, string deckName)
         {
             FlashDeck deck = FlashDeck.FromNothing(cardServer, deckName);
-            string getDeckQuery = String.Format("select * from Decks where DeckName='{0}'", deckName);
-            SQLiteDataReader dataReader = ExecuteReaderQuery(getDeckQuery);
+            var command = new SQLiteCommand(
+                @"select card.CardID, card.Front, card.Back 
+                from Cards card 
+                join Decks deck
+                on (deck.Card = card.CardID and deck.DeckName = (@deckName))", _connection);
+            command.Parameters.AddWithValue("@deckName", deckName);
+            command.CommandType = CommandType.Text;
+            SQLiteDataReader dataReader = command.ExecuteReader();
             while(dataReader.Read())
             {
                 string cardFront = Convert.ToString(dataReader["Front"]);
                 string cardBack = Convert.ToString(dataReader["Back"]);
-                Card card = new Card(cardFront, cardBack);
+                int id = Convert.ToInt32(dataReader["CardID"]);
+                Card card = new Card(id, cardFront, cardBack);
                 deck.AddCard(card);
             }
 
@@ -113,9 +132,9 @@ namespace FlashFrancais
 
         #region History DB
 
-        public void AddHistoryEntry(Card card, bool success)
+        public void AddHistoryEntry(Card card, TrialPerformance trialPerformance)
         {
-            AddHistoryEntryToDatabase(card, success);
+            AddHistoryEntryToDatabase(card, trialPerformance);
         }
 
         public CardHistoryEntry[] GetHistory(Card card)
@@ -134,10 +153,10 @@ namespace FlashFrancais
             return historyEntries.ToArray();
         }
 
-        private void AddHistoryEntryToDatabase(Card card, bool success)
+        private void AddHistoryEntryToDatabase(Card card, TrialPerformance trialPerformance)
         {
-            int successInt = success ? 1 : 0; // TODO change bool in sqlite database to string version of bool...
-            string insertHistoryEntryQuery = String.Format("insert into CardHistories (DateTime, Success, Card) values ('{0}', {1}, {2})", DateTime.Now.Ticks, card.ID, successInt);
+            int successInt = (int)trialPerformance; // TODO change bool in sqlite database to string version of bool...
+            string insertHistoryEntryQuery = String.Format("insert into CardHistories (DateTime, Success, Card) values ('{0}', {1}, {2})", DateTime.Now.Ticks, successInt, card.ID);
             ExecuteSimpleQuery(insertHistoryEntryQuery);
         }
 

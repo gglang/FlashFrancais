@@ -5,7 +5,7 @@ namespace FlashFrancais.Services
 {
     public class ConnectionStringProvider // TODO For now this is just a SQLite connection string provider, make interface if it becomes necessary
     {
-        private const string relativeDatabasePath = @"..\..\..\Decks\Test\collection.anki2";
+        private const string relativeDatabasePath = @"..\..\..\Decks\FlashDB.sqlite";
 
         public ConnectionStringProvider() // TODO Add config provider to here and read what you need from some kind of config database/csv
         {

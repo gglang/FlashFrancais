@@ -30,14 +30,11 @@ namespace FlashFrancais
             Back = back;
         }
 
-        private void AddHistoryEntry(CardHistoryEntry entry) // TODO Violating SRP? Move history management to another class?
+        public void AddHistoryEntry(TrialPerformance trialPerformance) // TODO Violating SRP? Move history management to another class?
         {
+            var entry = new CardHistoryEntry(DateTime.Now, trialPerformance);
             HistoryEntries.Add(entry);
-        }
-
-        public void AddHistoryEntry(TrialPerformance trialPerformance)
-        {
-            AddHistoryEntry(new CardHistoryEntry(DateTime.Now, trialPerformance));
+            
         }
     }
 }

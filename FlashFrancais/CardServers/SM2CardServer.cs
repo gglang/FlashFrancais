@@ -19,8 +19,14 @@ namespace FlashFrancais.CardServers
         private AnkiCardIntervalData _previousCardIntervalData = null;
         private IList<AnkiCardIntervalData> _activeCards = null;
         private IList<AnkiCardIntervalData> _inactiveCards = null;
+        private readonly Database _database;
 
-        public override void RecordPreviousTrial(TrialPerformance trialPerformance)
+        public SM2CardServer(Database database)
+        {
+            _database = database;
+        }
+
+        private void RecordPreviousTrial(TrialPerformance trialPerformance)
         {
             if (_previousCardIntervalData == null)
             {
@@ -36,13 +42,16 @@ namespace FlashFrancais.CardServers
                 if (_previousCardIntervalData.interval >= _activeCards[i].interval)
                 {
                     continue; 
-                } else
+                }
+                else
                 {
                     break;
                 }
             }
 
             _activeCards.Insert(insertAt, _previousCardIntervalData);
+
+            _database.AddHistoryEntry(_previousCardIntervalData.card, trialPerformance);
         }
 
         public override Card GetNextCard(TrialPerformance trialPerformance)
