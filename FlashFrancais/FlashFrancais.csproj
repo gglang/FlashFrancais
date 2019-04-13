@@ -110,6 +110,9 @@
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Services\ConnectionStringProvider.cs" />
     <Compile Include="Services\FlashDeckProvider.cs" />
+    <Compile Include="Views\CreateCardsControl.xaml.cs">
+      <DependentUpon>CreateCardsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FlashDeckControl.xaml.cs">
       <DependentUpon>FlashDeckControl.xaml</DependentUpon>
     </Compile>
@@ -119,6 +122,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Views\CreateCardsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

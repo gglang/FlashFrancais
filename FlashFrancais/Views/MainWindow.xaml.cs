@@ -24,5 +24,10 @@ namespace FlashFrancais
         {
             InitializeComponent();
         }
+
+        private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
