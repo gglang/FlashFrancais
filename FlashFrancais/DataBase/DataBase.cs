@@ -5,12 +5,12 @@ namespace FlashFrancais
 {
     public interface Database
     {
-        void AddCardToDeck(Card card, FlashDeck deck);
-        void AddCardsToDeck(IEnumerable<Card> cards, FlashDeck deck);
+        void AddCardToDeck(Card card, string deckName);
+        void AddCardsToDeck(IEnumerable<Card> cards, string deckName);
         string[] GetDeckNames();
         FlashDeck GetDeck(CardServer cardServer, string deckName);
 
-        void AddHistoryEntry(Card card, bool success);
-        CardHistoryEntry[] GetHistory(Card card);
+        void AddHistoryEntry(Card card, TrialPerformance trialPerformance);
+        CardHistoryEntry[] GetHistory(int cardID);
     }
 }

@@ -9,35 +9,24 @@ namespace FlashFrancais
 {
     public class Card
     {
-        public int ID { get; } = -1;
+        public int ID { get; set; }
         public string Front { get; set; }
         public string Back { get; set; }
 
         public IList<CardHistoryEntry> HistoryEntries { get; }
 
-        public Card(string front, string back)
+        public Card(string front, string back, IList<CardHistoryEntry> historyEntries = null, int id = -1)
         {
-            HistoryEntries = new List<CardHistoryEntry>();
-            Front = front;
-            Back = back;
-        }
-
-        public Card(int id, string front, string back)
-        {
-            HistoryEntries = new List<CardHistoryEntry>();
+            HistoryEntries = historyEntries ?? new List<CardHistoryEntry>();
             ID = id;
             Front = front;
             Back = back;
         }
 
-        private void AddHistoryEntry(CardHistoryEntry entry) // TODO Violating SRP? Move history management to another class?
+        public void AddHistoryEntry(TrialPerformance trialPerformance) // TODO Violating SRP? Move history management to another class?
         {
+            var entry = new CardHistoryEntry(DateTime.Now, trialPerformance);
             HistoryEntries.Add(entry);
-        }
-
-        public void AddHistoryEntry(TrialPerformance trialPerformance)
-        {
-            AddHistoryEntry(new CardHistoryEntry(DateTime.Now, trialPerformance));
         }
     }
 }

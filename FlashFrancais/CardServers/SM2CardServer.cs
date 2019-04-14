@@ -13,14 +13,19 @@ namespace FlashFrancais.CardServers
         private const float newInterval = 0f; // m0
         private const float easyIntervalModifier = 1.3f; // m4
 
-        private const int _maxFreshCards = 30;
-        private const float _amountOfDaysForStale = 3;
+        private int _numberOfNewCardsAllowed = 30; // TODO Allow this to be viewed, configured and added to by user, right now it is just per session...
 
         private AnkiCardIntervalData _previousCardIntervalData = null;
         private IList<AnkiCardIntervalData> _activeCards = null;
         private IList<AnkiCardIntervalData> _inactiveCards = null;
+        private readonly Database _database;
 
-        public override void RecordPreviousTrial(TrialPerformance trialPerformance)
+        public SM2CardServer(Database database)
+        {
+            _database = database;
+        }
+
+        private void RecordPreviousTrial(TrialPerformance trialPerformance)
         {
             if (_previousCardIntervalData == null)
             {
@@ -36,13 +41,16 @@ namespace FlashFrancais.CardServers
                 if (_previousCardIntervalData.interval >= _activeCards[i].interval)
                 {
                     continue; 
-                } else
+                }
+                else
                 {
                     break;
                 }
             }
 
             _activeCards.Insert(insertAt, _previousCardIntervalData);
+
+            _database.AddHistoryEntry(_previousCardIntervalData.card, trialPerformance);
         }
 
         public override Card GetNextCard(TrialPerformance trialPerformance)
@@ -62,7 +70,7 @@ namespace FlashFrancais.CardServers
                 RecordPreviousTrial(trialPerformance);
             }
 
-            if (ShouldActivateNewCard())
+            if (ShouldActivateNewCard()) // TODO Should this really happen if the user fails? Should we have a staleness metric like back in the good old days?
             {
                 ActivateNewCard();
             }
@@ -75,27 +83,13 @@ namespace FlashFrancais.CardServers
 
         private bool ShouldActivateNewCard()
         {
-            if(_activeCards.Count < _maxFreshCards)
+            if(_numberOfNewCardsAllowed > 0)
             {
+                _numberOfNewCardsAllowed--;
                 return true;
             }
 
-            int freshCardCount = 0;
-            foreach (AnkiCardIntervalData cardData in _activeCards)
-            {
-                if (cardData.interval < _amountOfDaysForStale)
-                {
-                    freshCardCount++;
-                }
-            }
-
-            if (freshCardCount < _maxFreshCards)
-            {
-                return true;
-            } else
-            {
-                return false;
-            }
+            return false;
         }
 
         private void ActivateNewCard()

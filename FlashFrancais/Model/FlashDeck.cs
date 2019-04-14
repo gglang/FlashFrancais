@@ -14,10 +14,7 @@ namespace FlashFrancais
 
         private FlashDeck(CardServer cardServer, string deckName, IList<Card> flashCards = null)
         {
-            if (deckName == null) // TODO What about the rule of never passing null? Can we then avoid null checks?
-                throw new InvalidOperationException("No deck name declared for a deck being constructed. Please provide a deck name!");
-
-            Name = deckName;
+            Name = deckName ?? throw new InvalidOperationException("No deck name declared for a deck being constructed. Please provide a deck name!");
             _flashCards = flashCards ?? new List<Card>();
             _cardServer = cardServer;
             _cardServer.Init(_flashCards); // TODO I am not convinced of this pattern :( Also it seems to take way too long to set new things up when doing DI like this
@@ -45,12 +42,7 @@ namespace FlashFrancais
             return new FlashDeck(cardServer, deckName, flashCards);
         }
 
-        public Card GetNextCard()
-        {
-            return _flashCards[(_deckIndex++) % _flashCards.Count];
-        }
-
-        public Card GetNextCardNew(TrialPerformance trialPerformance)
+        public Card GetNextCard(Database database, TrialPerformance trialPerformance)
         {
             return _cardServer.GetNextCard(trialPerformance);
         }

@@ -15,7 +15,7 @@ namespace FlashFrancais.Services
             // TODO perhaps refactor this to be more abstracted
             // Ala: https://autofaccn.readthedocs.io/en/latest/faq/injecting-configured-parameters.html
             builder.RegisterType<SM2CardServer>().As<CardServer>();
-            builder.RegisterType<FlashDeckProvider>(); // TODO I am not convinced of this pattern, but it is probably good at least for a class with SRP to provide the deck...
+            builder.RegisterType<SQLiteFlashDeckProvider>().SingleInstance().As<FlashDeckProvider>(); // TODO I am not convinced of this pattern, but it is probably good at least for a class with SRP to provide the deck...
             builder.RegisterType<ConnectionStringProvider>(); // TODO Resolve this into an interface? Perhaps it should provide Connections, rather than strings, more secure?
             builder.RegisterType<SQLiteDatabase>().SingleInstance().As<Database>();
             builder.RegisterType<FlashDeckViewModel>(); // TODO Resolve this into an interface?
