@@ -25,9 +25,9 @@ namespace FlashFrancais
             return new FlashDeck(cardServer, deckName);
         }
 
-        public static FlashDeck FromCSV(CardServer cardServer, string deckPath, string deckName = null)
+        public static FlashDeck FromCSV(CardServer cardServer, string deckPath, string deckName = null, string delimiter = ",")
         {
-            var deckLoader = new CSVDeckLoader();
+            var deckLoader = new CSVDeckLoader(delimiter);
             return deckLoader.GetFlashDeck(cardServer, deckPath, deckName: deckName);
         }
 

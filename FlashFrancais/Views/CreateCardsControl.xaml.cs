@@ -1,4 +1,8 @@
-﻿using Microsoft.Win32;
+﻿using Autofac;
+using FlashFrancais.CardServers;
+using FlashFrancais.Services;
+using FlashFrancais.ViewModels;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,18 +27,25 @@ namespace FlashFrancais
     /// </summary>
     public partial class CreateCardsControl : UserControl
     {
+        private Database _db;
+        private CardServer _cardServer;
+        private string _selectedFlashDeck = "FlashFrench";
+        private string _selectedDelimiter = ",,";
+
         public CreateCardsControl()
         {
             InitializeComponent();
+            _db = GlobalFactory.Container.Resolve<Database>();
+            _cardServer = GlobalFactory.Container.Resolve<CardServer>();
         }
 
         private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            if(openFileDialog.ShowDialog() == true)
+            if (openFileDialog.ShowDialog() == true)
             {
-                string result = File.ReadAllText(openFileDialog.FileName);
-                Debug.WriteLine(result);
+                FlashDeck cardsToAdd = FlashDeck.FromCSV(_cardServer, openFileDialog.FileName, _selectedFlashDeck, _selectedDelimiter); // Make deck configurable
+                _db.AddCardsToDeck(cardsToAdd.GetCards(), cardsToAdd.Name);
             }
         }
 
@@ -44,7 +55,8 @@ namespace FlashFrancais
             string cardBack = BackTextbox.Text;
             FrontTextbox.Clear();
             BackTextbox.Clear();
-            Debug.WriteLine("Front: {0}, Back: {1}", cardFront, cardBack);
+            Card cardToAdd = new Card(cardFront, cardBack);
+            _db.AddCardToDeck(cardToAdd, _selectedFlashDeck);
         }
     }
 }

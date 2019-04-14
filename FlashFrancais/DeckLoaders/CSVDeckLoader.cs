@@ -5,19 +5,26 @@ namespace FlashFrancais.DeckLoaders
 {
     public class CSVDeckLoader : FlashDeckLoader
     {
+        private string _delimiter;
+
+        public CSVDeckLoader(string delimiter = ",")
+        {
+            _delimiter = delimiter;
+        }
+
         public override FlashDeck GetFlashDeck(CardServer cardServer, string deckPath, string deckName = null)
         {
             deckName = deckName ?? GetDeckNameFromFileName(deckPath);
-            return LoadSingleColumnCSV(cardServer, deckPath, deckName);
+            return LoadSingleColumnCSV(cardServer, deckPath, deckName, _delimiter);
         }
 
-        private FlashDeck LoadSingleColumnCSV(CardServer cardServer, string deckPath, string deckName)
+        private FlashDeck LoadSingleColumnCSV(CardServer cardServer, string deckPath, string deckName, string delimiter = ",")
         {
             FlashDeck deckToLoad = FlashDeck.FromNothing(cardServer, deckName);
             using (TextFieldParser deckCSVParser = new TextFieldParser(@deckPath))
             {
                 deckCSVParser.TextFieldType = FieldType.Delimited;
-                deckCSVParser.SetDelimiters(",");
+                deckCSVParser.SetDelimiters(delimiter);
                 while (!deckCSVParser.EndOfData)
                 {
                     string[] flashCardSides = deckCSVParser.ReadFields();

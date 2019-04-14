@@ -45,6 +45,7 @@ namespace FlashFrancais
 
         #region Deck DB
 
+        // TODO bad name, not adding to deck passed, adding to db
         public void AddCardToDeck(Card card, string deckName)
         {
             AddCardToDatabase(card, deckName);
