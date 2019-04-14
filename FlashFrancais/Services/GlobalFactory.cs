@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using FlashFrancais.CardServers;
 using FlashFrancais.ViewModels;
+using System;
 using System.IO;
 
 namespace FlashFrancais.Services
@@ -21,6 +22,11 @@ namespace FlashFrancais.Services
             builder.RegisterType<FlashDeckViewModel>(); // TODO Resolve this into an interface?
 
             Container = builder.Build();
+        }
+
+        internal static T Resolve<T>()
+        {
+            throw new NotImplementedException();
         }
     }
 }

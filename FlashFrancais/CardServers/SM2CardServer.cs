@@ -60,14 +60,14 @@ namespace FlashFrancais.CardServers
                 InitCardData();
             }
 
-            if (_activeCards.Count <= 0 && _inactiveCards.Count <= 0)
-            {
-                return null;
-            }
-
             if (_previousCardIntervalData != null)
             {
                 RecordPreviousTrial(trialPerformance);
+            }
+
+            if (_activeCards.Count <= 0 && _inactiveCards.Count <= 0)
+            {
+                return null;
             }
 
             if (ShouldActivateNewCard()) // TODO Should this really happen if the user fails? Should we have a staleness metric like back in the good old days?

@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace FlashFrancais
 {
@@ -111,6 +112,35 @@ namespace FlashFrancais
         public FlashDeck GetDeck(CardServer cardServer, string deckName)
         {
             FlashDeck deck = FlashDeck.FromNothing(cardServer, deckName);
+            IList<Card> cards = getCardsForDeck(deckName);
+            deck.AddCards(cards);
+            return deck;
+        }
+
+        public FlashDeck GetCompoundDeck(CardServer cardServer, string[] deckNames)
+        {
+            FlashDeck deck = FlashDeck.FromNothing(cardServer, GetCompoundDeckName(deckNames));
+            foreach(var deckName in deckNames)
+            {
+                IList<Card> cards = getCardsForDeck(deckName);
+                deck.AddCards(cards);
+            }
+            return deck;
+        }
+
+        private string GetCompoundDeckName(string[] deckNames)
+        {
+            var compoundNameStringBuilder = new StringBuilder();
+            foreach(string deckName in deckNames)
+            {
+                compoundNameStringBuilder.Append(deckName);
+            }
+            return compoundNameStringBuilder.ToString();
+        }
+
+        private IList<Card> getCardsForDeck(string deckName)
+        {
+            var cards = new List<Card>();
             var command = new SQLiteCommand(
                 @"select card.CardID, card.Front, card.Back 
                 from Cards card 
@@ -119,17 +149,17 @@ namespace FlashFrancais
             command.Parameters.AddWithValue("@deckName", deckName);
             command.CommandType = CommandType.Text;
             SQLiteDataReader dataReader = command.ExecuteReader();
-            while(dataReader.Read())
+            while (dataReader.Read())
             {
                 string cardFront = Convert.ToString(dataReader["Front"]);
                 string cardBack = Convert.ToString(dataReader["Back"]);
                 int id = Convert.ToInt32(dataReader["CardID"]);
                 List<CardHistoryEntry> historyEntries = GetHistory(id).ToList(); // TODO Batch this somehow... but apparently its not too slow?
                 Card card = new Card(cardFront, cardBack, historyEntries, id);
-                deck.AddCard(card);
+                cards.Add(card);
             }
 
-            return deck;
+            return cards;
         }
 
         #endregion

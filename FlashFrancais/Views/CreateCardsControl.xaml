@@ -10,6 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -18,11 +19,16 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Content="Front:"/>
-        <TextBox Name="FrontTextbox" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,5,0"/>
-        <Label Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Content="Back:"/>
-        <TextBox Name="BackTextbox" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Margin="5,0,5,0"/>
-        <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Click="BtnSubmitNewCard_Click" Content="Create Card"/>
-        <Button Grid.ColumnSpan="5" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5,5,5,5" Name="btnOpenFile" Click="BtnOpenFile_Click">Add cards from file</Button>
+        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Content="Deck to add to:"/>
+        <ComboBox Name="DeckSelectComboBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5,5,5,5"/>
+        <Label Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Content="Deck Name:"/>
+        <TextBox Name="NewDeckTextBox" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Margin="5,0,5,0"/>
+        <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Click="BtnSubmitNewDeck_Click" Content="Create Deck"/>
+        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Front:"/>
+        <TextBox Name="FrontTextbox" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,5,0"/>
+        <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Content="Back:"/>
+        <TextBox Name="BackTextbox" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="5,0,5,0"/>
+        <Button Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" Click="BtnSubmitNewCard_Click" Content="Create Card"/>
+        <Button Grid.ColumnSpan="5" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5,5,5,5" Name="BtnOpenFile" Click="BtnOpenFile_Click">Add cards from file</Button>
     </Grid>
 </UserControl>

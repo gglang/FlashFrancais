@@ -23,11 +23,37 @@ namespace FlashFrancais
         public MainWindow()
         {
             InitializeComponent();
+            _lastSelectedTab = PracticeTab;
         }
 
-        private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
-        {
+        private TabItem _lastSelectedTab;
 
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabControl senderTabControl = sender as TabControl;
+            if(senderTabControl == null)
+            {
+                return;
+            }
+
+            if(PracticeTab.IsSelected && _lastSelectedTab != PracticeTab)
+            {
+                _lastSelectedTab = PracticeTab;
+                var flashDeckControl = PracticeTab.Content as FlashDeckControl;
+                flashDeckControl?.Refresh();
+            }
+            if(CreateTab.IsSelected && _lastSelectedTab != CreateTab)
+            {
+                _lastSelectedTab = CreateTab;
+                var createCardsControl = CreateTab.Content as CreateCardsControl;
+                createCardsControl?.Refresh();
+            }
+            if(ViewingConfigTab.IsSelected && _lastSelectedTab != ViewingConfigTab)
+            {
+                _lastSelectedTab = ViewingConfigTab;
+                var viewingConfigControl = ViewingConfigTab.Content as FlashDeckViewingConfig;
+                viewingConfigControl?.Refresh();
+            }
         }
     }
 }

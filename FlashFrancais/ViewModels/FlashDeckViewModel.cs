@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Input;
 using FlashFrancais.Services;
+using FlashFrancais.CardServers;
+using Autofac;
 
 namespace FlashFrancais.ViewModels
 {
@@ -12,6 +14,8 @@ namespace FlashFrancais.ViewModels
         private int _cardSuccesses;
         private Card _currentCard;
         private Database _database;
+        private CardServer _cardServer;
+        private string[] _previouslyLoadedDecks;
 
         private FlashDeck _myDeck;
 
@@ -57,13 +61,48 @@ namespace FlashFrancais.ViewModels
             }
         }
 
-        public FlashDeckViewModel(Database database, FlashDeckProvider deckProvider)
+        public FlashDeckViewModel(Database database)
         {
             // TODO Check out if (IsInDesignMode) example in mvvmlight for blend
             _database = database;
-            _myDeck = deckProvider.GetFlashDeck(); // TODO is this the right place for this kind of logic?
-            _showingFront = true;
+            ReloadWithDeckNames(GetDefaultDeckNames());
+        }
+
+        public void ReloadWithDeckNames(string[] deckNames)
+        {
+            if(!ShouldReloadDeck(deckNames))
+            {
+                return;
+            }
+            _currentCard = null;
+            _cardServer = GlobalFactory.Container.Resolve<CardServer>();
+            _previouslyLoadedDecks = deckNames;
+            _myDeck = _database.GetCompoundDeck(_cardServer, deckNames);
+            ShowingFront = true;
             GetNextCard(TrialPerformance.Fail); // TODO move this to a start event in WPF or something else...
+        }
+
+        private bool ShouldReloadDeck(string[] deckNames)
+        {
+            if(deckNames?.Count() != _previouslyLoadedDecks?.Count())
+            {
+                return true;
+            }
+
+            foreach (var deckName in _previouslyLoadedDecks)
+            {
+                if (!deckNames.Contains(deckName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string[] GetDefaultDeckNames()
+        {
+            return _database.GetDeckNames();
         }
 
         private void FlipCurrectCard()
@@ -96,6 +135,10 @@ namespace FlashFrancais.ViewModels
             if (_currentCard == null)
             {
                 _currentCard = _myDeck.GetNextCard(_database, TrialPerformance.Fail);
+                if(_currentCard == null)
+                {
+                    return;
+                }
             }
 
             CurrentCardText = ShowingFront ? _currentCard.Front : _currentCard.Back;

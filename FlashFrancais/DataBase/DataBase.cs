@@ -9,6 +9,7 @@ namespace FlashFrancais
         void AddCardsToDeck(IEnumerable<Card> cards, string deckName);
         string[] GetDeckNames();
         FlashDeck GetDeck(CardServer cardServer, string deckName);
+        FlashDeck GetCompoundDeck(CardServer cardServer, string[] deckNames);
 
         void AddHistoryEntry(Card card, TrialPerformance trialPerformance);
         CardHistoryEntry[] GetHistory(int cardID);

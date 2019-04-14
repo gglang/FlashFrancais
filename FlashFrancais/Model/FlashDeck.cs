@@ -52,6 +52,14 @@ namespace FlashFrancais
             _flashCards.Add(card);
         }
 
+        public void AddCards(IList<Card> cards)
+        {
+            foreach(var card in cards)
+            {
+                AddCard(card);
+            }
+        }
+
         public IEnumerable<Card> GetCards()
         {
             return _flashCards;

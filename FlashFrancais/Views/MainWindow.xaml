@@ -8,12 +8,15 @@
         Title="MainWindow" Height="450" Width="800"
         DataContext="{Binding Source={StaticResource vmLocator}, Path=FlashDeckViewModel}">
     <StackPanel>
-        <TabControl Name="mainTabs">
-            <TabItem Header="Practice">
+        <TabControl Name="mainTabs" SelectionChanged="TabControl_SelectionChanged">
+            <TabItem Name="PracticeTab" Header="Practice">
                 <local:FlashDeckControl/>
             </TabItem>
-            <TabItem Header="Create Cards">
+            <TabItem Name="CreateTab" Header="Create Cards">
                 <local:CreateCardsControl/>
+            </TabItem>
+            <TabItem Name="ViewingConfigTab" Header="Viewing Config">
+                <local:FlashDeckViewingConfig/>
             </TabItem>
         </TabControl>
     </StackPanel>
