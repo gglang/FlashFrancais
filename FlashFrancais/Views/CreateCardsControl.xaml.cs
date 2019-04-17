@@ -77,7 +77,7 @@ namespace FlashFrancais
                 string.Format("Les {0} dernières fiches qui étaient ajoutées "+
                 "à la petite application de Gerald",
                 cardsAdded.GetCards().Count());
-            string emailStart = "Salut Dominic,\n\nC'est moi, le robo fait par Gerald pour vous "+
+            string emailStart = "Salut Dominic,\n\nC'est moi, le robot fait par Gerald pour vous "+
                                 "informer de ses choses. Voila, les derniers développments:\n\n";
             string emailContent = "";
             string emailEnd = "Merçi de votre attention,\nLe petit robot amical de Gerald";
