@@ -21,7 +21,7 @@ namespace FlashFrancais.DeckLoaders
         private FlashDeck LoadSingleColumnCSV(CardServer cardServer, string deckPath, string deckName, string delimiter = ",")
         {
             FlashDeck deckToLoad = FlashDeck.FromNothing(cardServer, deckName);
-            using (TextFieldParser deckCSVParser = new TextFieldParser(@deckPath))
+            using (TextFieldParser deckCSVParser = new TextFieldParser(@deckPath, System.Text.Encoding.GetEncoding("iso-8859-1")))
             {
                 deckCSVParser.TextFieldType = FieldType.Delimited;
                 deckCSVParser.SetDelimiters(delimiter);

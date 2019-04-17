@@ -10,10 +10,11 @@ namespace FlashFrancais.CardServers
     {
         // TODO Const vs not static final?
         private const float intervalModifier = 1f; // m
-        private const float newInterval = 0f; // m0
+        private const float newInterval = 0.001f; // m0 // HACK to make it non zero to make it not read as an inactive card on reload
         private const float easyIntervalModifier = 1.3f; // m4
 
-        private int _numberOfNewCardsAllowed = 30; // TODO Allow this to be viewed, configured and added to by user, right now it is just per session...
+        private static int _numberOfNewCardsAllowed = 30; // TODO Allow this to be viewed, configured and added to by user, right now it is just per session...
+        // HACK to be static to ensure once per runtime increased to 30...
 
         private AnkiCardIntervalData _previousCardIntervalData = null;
         private IList<AnkiCardIntervalData> _activeCards = null;

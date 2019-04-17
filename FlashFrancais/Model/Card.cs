@@ -28,5 +28,11 @@ namespace FlashFrancais
             var entry = new CardHistoryEntry(DateTime.Now, trialPerformance);
             HistoryEntries.Add(entry);
         }
+
+        public override string ToString()
+        {
+            string result = string.Format("{0} ===== {1}", Front, Back);
+            return result;
+        }
     }
 }

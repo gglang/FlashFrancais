@@ -68,12 +68,14 @@ namespace FlashFrancais.ViewModels
             ReloadWithDeckNames(GetDefaultDeckNames());
         }
 
+        public static bool ReloadRequested = false;
         public void ReloadWithDeckNames(string[] deckNames)
         {
-            if(!ShouldReloadDeck(deckNames))
+            if(!ReloadRequested && !ShouldReloadDeck(deckNames))
             {
                 return;
             }
+            ReloadRequested = false;
             _currentCard = null;
             _cardServer = GlobalFactory.Container.Resolve<CardServer>();
             _previouslyLoadedDecks = deckNames;
