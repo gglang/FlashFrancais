@@ -13,23 +13,23 @@
 
     <Grid> <!-- Redo this jank -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="35*"/>
-            <RowDefinition Height="308*"/>
-            <RowDefinition Height="38*"/>
-            <RowDefinition Height="69*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" FontSize="20" Margin="361,0,361,308.036" Grid.RowSpan="2">
             <Run Text="Successes: "/>
             <Run Text="{Binding CardSuccesses, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
         </TextBlock>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Text="{Binding CurrentCardText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" FontSize="36"/>
-
-        <Grid Grid.Row="1" Margin="0,275.333,0,0" Grid.RowSpan="3">
+        <ScrollViewer Grid.Row="1" Height="400">
+            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Center" Text="{Binding CurrentCardText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" FontSize="30"/>
+        </ScrollViewer>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Command="{Binding FlipCurrentCardCommand}" Content="montre la réponse" FontSize="36" RenderTransformOrigin="1.75,-1.787" Margin="210,0,210,10" Visibility="{Binding ShowingFront, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}, ConverterParameter=true}" Grid.ColumnSpan="2"/>
+            <Button Grid.Column="0" Command="{Binding FlipCurrentCardCommand}" Content="montre la réponse" FontSize="36" Visibility="{Binding ShowingFront, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}, ConverterParameter=true}" Grid.ColumnSpan="2"/>
             <Button Command="{Binding GetNextCardFailureCommand}" Content="la prochaine fois" FontSize="36" Margin="10,0,10,10" Visibility="{Binding ShowingFront, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}, ConverterParameter=false}"/>
             <Button Command="{Binding GetNextCardSuccessCommand}" Content="victoire" FontSize="36" Margin="10,0,10,10" Visibility="{Binding ShowingFront, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}, ConverterParameter=false}" Grid.Column="1"/>
         </Grid>

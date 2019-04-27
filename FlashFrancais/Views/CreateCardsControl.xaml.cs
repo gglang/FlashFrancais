@@ -55,7 +55,7 @@ namespace FlashFrancais
                 FlashDeck cardsToAdd = FlashDeck.FromCSV(_cardServer, openFileDialog.FileName, GetSelectedFlashDeck(), _selectedDelimiter); // Make deck configurable
                 _db.AddCardsToDeck(cardsToAdd.GetCards(), cardsToAdd.Name);
                 AddDefaultHistoryToActivateNewCards(cardsToAdd);
-                SendEmailNotificationOfNewCards(cardsToAdd);
+                //SendEmailNotificationOfNewCards(cardsToAdd);
                 FlashDeckViewModel.ReloadRequested = true;
             }
         }

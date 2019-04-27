@@ -23,6 +23,7 @@ namespace FlashFrancais.DeckLoaders
             FlashDeck deckToLoad = FlashDeck.FromNothing(cardServer, deckName);
             using (TextFieldParser deckCSVParser = new TextFieldParser(@deckPath, System.Text.Encoding.GetEncoding("iso-8859-1")))
             {
+                deckCSVParser.HasFieldsEnclosedInQuotes = false;
                 deckCSVParser.TextFieldType = FieldType.Delimited;
                 deckCSVParser.SetDelimiters(delimiter);
                 while (!deckCSVParser.EndOfData)
