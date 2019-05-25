@@ -18,6 +18,8 @@ namespace FlashFrancais
     /// </summary>
     public partial class CreateCardsControl : UserControl
     {
+        public static string SelectedDeckToAddTo = null;
+
         private Database _db;
         private CardServer _cardServer;
         private string _selectedDelimiter = ",,";
@@ -44,7 +46,13 @@ namespace FlashFrancais
                     }
             );
             DeckSelectComboBox.ItemsSource = _deckNames;
-            DeckSelectComboBox.SelectedIndex = 0;
+
+            if (_deckNames.Count > 0 && DeckSelectComboBox.SelectedIndex < 0)
+            {
+                SetSelectedDeckIndex(0);
+            }
+
+            SetSelectedDeckIndex(DeckSelectComboBox.SelectedIndex);
         }
 
         private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
@@ -119,8 +127,14 @@ namespace FlashFrancais
                 return;
             }
             _deckNames.Add(NewDeckTextBox.Text);
-            DeckSelectComboBox.SelectedIndex = _deckNames.Count - 1;
+            SetSelectedDeckIndex(_deckNames.Count - 1);
             NewDeckTextBox.Clear();
+        }
+
+        private void SetSelectedDeckIndex(int index)
+        {
+            DeckSelectComboBox.SelectedIndex = index;
+            SelectedDeckToAddTo = _deckNames[index];
         }
 
         private string GetSelectedFlashDeck()

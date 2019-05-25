@@ -4,6 +4,7 @@ using System.Windows.Input;
 using FlashFrancais.Services;
 using FlashFrancais.CardServers;
 using Autofac;
+using System.Windows;
 
 namespace FlashFrancais.ViewModels
 {
@@ -58,6 +59,14 @@ namespace FlashFrancais.ViewModels
             get
             {
                 return new DelegateCommand(GetNextCardFailure);
+            }
+        }
+
+        public ICommand CreateReverseCommand
+        {
+            get
+            {
+                return new DelegateCommand(CreateReverse);
             }
         }
 
@@ -123,6 +132,18 @@ namespace FlashFrancais.ViewModels
         {
             _currentCard.AddHistoryEntry(TrialPerformance.Fail);
             GetNextCard(TrialPerformance.Fail);
+        }
+
+        private void CreateReverse()
+        {
+            Card reverseCard = new Card(_currentCard.Back, _currentCard.Front);
+            if(CreateCardsControl.SelectedDeckToAddTo == null)
+            {
+                MessageBox.Show("No selected deck to add to, go select one on the create cards page first.");
+                return;
+            }
+            _database.AddCardToDeck(reverseCard, CreateCardsControl.SelectedDeckToAddTo);
+            _myDeck.AddCard(reverseCard);
         }
 
         private void GetNextCard(TrialPerformance trialPerformance)
