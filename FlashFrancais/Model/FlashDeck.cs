@@ -2,20 +2,21 @@
 using FlashFrancais.DeckLoaders;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace FlashFrancais
 {
     public class FlashDeck
     {
         public string Name { get; }
-        private CardServer _cardServer; // TODO Why private property like this?
-        private IList<Card> _flashCards { get; set; }
+        public CardServer _cardServer; // TODO Why private property like this?
+        public ObservableCollection<Card> _flashCards { get; set; }
         private int _deckIndex = 0;
 
         private FlashDeck(CardServer cardServer, string deckName, IList<Card> flashCards = null)
         {
             Name = deckName ?? throw new InvalidOperationException("No deck name declared for a deck being constructed. Please provide a deck name!");
-            _flashCards = flashCards ?? new List<Card>();
+            _flashCards = flashCards == null ? new ObservableCollection<Card>() : new ObservableCollection<Card>(flashCards);
             _cardServer = cardServer;
             _cardServer.Init(_flashCards); // TODO I am not convinced of this pattern :( Also it seems to take way too long to set new things up when doing DI like this
         }

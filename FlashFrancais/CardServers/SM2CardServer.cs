@@ -56,10 +56,7 @@ namespace FlashFrancais.CardServers
 
         public override Card GetNextCard(TrialPerformance trialPerformance)
         {
-            if (_inactiveCards == null || _activeCards == null)
-            {
-                InitCardData();
-            }
+            InitCardDataIfNeeded();
 
             if (_previousCardIntervalData != null)
             {
@@ -104,15 +101,18 @@ namespace FlashFrancais.CardServers
             _inactiveCards.RemoveAt(0);
         }
 
-        private void InitCardData()
+        private void InitCardDataIfNeeded()
         {
+            if (_inactiveCards != null && _activeCards != null)
+                return;
+
             List<AnkiCardIntervalData> cardsWithIntervals = new List<AnkiCardIntervalData>();
             foreach (Card c in _cards)
             {
                 AnkiCardIntervalData cardIntervalData = CalculateCardIntervalData(c);
                 cardsWithIntervals.Add(cardIntervalData);
             }
-            cardsWithIntervals.OrderBy(x => x.interval);
+            cardsWithIntervals.Sort((cardA, cardB) => cardB.interval.CompareTo(cardA.interval));
             _inactiveCards = cardsWithIntervals;
             _activeCards = new List<AnkiCardIntervalData>();
 
@@ -232,12 +232,30 @@ namespace FlashFrancais.CardServers
             return understandingFactor;
         }
 
-        private class AnkiCardIntervalData
+        public override IList<AnkiCardIntervalData> GetUpcomingCards()
         {
-            public DateTime? lastReview { get; set; }
-            public Card card { get; set; }
-            public double interval { get; set; }
-            public double understandingFactor { get; set; }
+            InitCardDataIfNeeded();
+            return _activeCards;
+        }
+    }
+
+    public class AnkiCardIntervalData
+    {
+        public DateTime? lastReview { get; set; }
+        public Card card { get; set; }
+        public double interval { get; set; }
+        public double understandingFactor { get; set; }
+
+        public override string ToString()
+        {
+            string historyString = "";
+            card.HistoryEntries.ToList().ForEach(x => historyString += $"[[[ {x.EntryTime.ToString()} - {x.TrialPerformance} ]]], ");
+            string myString = $"===================\n" 
+                + $"Front: '{card.Front}' ; Back: '{card.Back}'\n"
+                + $"Card History: '{historyString}'\n"
+                + $"Last Review: '{lastReview}' ; Interval: '{interval}' ; UnderstandingFactor: '{understandingFactor}'\n"
+                + $"===================";
+            return myString;
         }
     }
 }

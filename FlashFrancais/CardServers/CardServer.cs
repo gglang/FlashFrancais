@@ -12,5 +12,7 @@ namespace FlashFrancais.CardServers
         }
 
         public abstract Card GetNextCard(TrialPerformance trialPerformance);
+
+        public abstract IList<AnkiCardIntervalData> GetUpcomingCards(); // TODO kek
     }
 }

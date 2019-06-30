@@ -115,6 +115,9 @@
     <Compile Include="Views\CreateCardsControl.xaml.cs">
       <DependentUpon>CreateCardsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DebugWindow.xaml.cs">
+      <DependentUpon>DebugWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FlashDeckControl.xaml.cs">
       <DependentUpon>FlashDeckControl.xaml</DependentUpon>
     </Compile>
@@ -125,6 +128,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="Views\CreateCardsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

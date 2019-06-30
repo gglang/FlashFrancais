@@ -5,6 +5,7 @@ using FlashFrancais.Services;
 using FlashFrancais.CardServers;
 using Autofac;
 using System.Windows;
+using FlashFrancais.Views;
 
 namespace FlashFrancais.ViewModels
 {
@@ -17,6 +18,7 @@ namespace FlashFrancais.ViewModels
         private Database _database;
         private CardServer _cardServer;
         private string[] _previouslyLoadedDecks;
+        private DebugWindow _debugWindow;
 
         private FlashDeck _myDeck;
 
@@ -67,6 +69,14 @@ namespace FlashFrancais.ViewModels
             get
             {
                 return new DelegateCommand(CreateReverse);
+            }
+        }
+
+        public ICommand DebugCommand
+        {
+            get
+            {
+                return new DelegateCommand(SpawnDebugWindow);
             }
         }
 
@@ -146,6 +156,13 @@ namespace FlashFrancais.ViewModels
             _myDeck.AddCard(reverseCard);
         }
 
+        private void SpawnDebugWindow()
+        {
+            _debugWindow = new DebugWindow();
+            _debugWindow.Show();
+            _debugWindow.InitDebugging(_myDeck._cardServer.GetUpcomingCards());
+        }
+
         private void GetNextCard(TrialPerformance trialPerformance)
         {
             _currentCard = _myDeck.GetNextCard(_database, trialPerformance);
@@ -166,6 +183,8 @@ namespace FlashFrancais.ViewModels
 
             CurrentCardText = ShowingFront ? _currentCard.Front : _currentCard.Back;
             CardSuccesses = _currentCard.HistoryEntries.Where(entry => entry.TrialPerformance > 0).Count();
+
+            _debugWindow?.Refresh();
         }
     }
 }
